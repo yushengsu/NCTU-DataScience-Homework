@@ -2,10 +2,10 @@
 Crawl PTT Beauty板  
   
 四種功能：
-* 'crawl'  
-* 'push'   
-* 'popular'   
-* 'keyword'     
+* `crawl`  
+* `push`   
+* `popular`   
+* `keyword`     
 # 1. Python 0516041.py crawl  
 -> 爬2017年一整年文章  
 -> Input: N/A  

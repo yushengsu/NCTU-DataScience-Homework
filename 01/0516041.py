@@ -1,3 +1,6 @@
+# final version editted by Yu Sheng Su
+# comment -> for debugging
+
 from bs4 import BeautifulSoup
 import requests
 import urllib3
@@ -77,7 +80,7 @@ def crawl():
                         # print(total)
                         if push >= 100:
                             file2.write(total)
-        time.sleep(0.5)
+        time.sleep(0.2)
     file1.close()
     file2.close()
 
@@ -97,10 +100,11 @@ def push(start_date, end_date):
         url = line[line.find('http'):]
         href = url.replace('\n','')
         date = line[0:line.find(',')]
-        title = line[line.find(',')+1: line.find(',http')]
-        if int(date) >= int(start_date) and int(date) <= int(end_date):
+        # title = line[line.find(',')+1: line.find(',http')]
+        if int(date) > int(end_date):
+            break
+        if int(date) >= int(start_date):
                         
-        
             article_res = requests.get(href, verify = False)
             art_soup = BeautifulSoup(article_res.text,features="lxml")
             
@@ -125,11 +129,11 @@ def push(start_date, end_date):
                         boo += 1 
                 except:
                     pass
-            print(date + ',' + title + ',' + "like:" + str(like) + ',' + "boo:" + str(boo))
+            # print(date + ',' + title + ',' + "like:" + str(like) + ',' + "boo:" + str(boo))
         
-        # time.sleep(0.5)
-    print("all like:", like)
-    print("all boo:", boo)
+        time.sleep(0.5)
+    # print("all like:", like)
+    # print("all boo:", boo)
     file4.write("all like: " + str(like) + '\n')
     file4.write("all boo: " +  str(boo) + '\n')
     
@@ -138,9 +142,9 @@ def push(start_date, end_date):
 
     for top in range(0,10):
         like_comment = "like #" + str(top+1) + ": "
-        print(like_comment, end = '')
+        # print(like_comment, end = '')
         file4.write(like_comment)
-        print(sort_like_name[top][0],sort_like_name[top][1])
+        # print(sort_like_name[top][0],sort_like_name[top][1])
         file4.write(sort_like_name[top][0] + " " + str(sort_like_name[top][1]) + '\n')
 
     sort_boo_num = sorted(boo_id_list.items(), key = operator.itemgetter(1, 0), reverse = True)
@@ -148,9 +152,9 @@ def push(start_date, end_date):
 
     for top in range(0,10):
         boo_comment = "boo #" + str(top+1) + ": "
-        print(boo_comment, end = '')
+        # print(boo_comment, end = '')
         file4.write(boo_comment)
-        print(sort_boo_name[top][0],sort_boo_name[top][1])
+        # print(sort_boo_name[top][0],sort_boo_name[top][1])
         file4.write(sort_boo_name[top][0] + " " + str(sort_boo_name[top][1]) + '\n')
     file3.close()
     file4.close()
@@ -182,10 +186,10 @@ def popular(start_date, end_date):
                         img_url.append(post['href'])
                 except:
                     pass
-        time.sleep(0.5)    
+        time.sleep(0.2)    
     # print("number of popular articles:", article_num)
     # for url_text in img_url:
-    #     print(url_text)
+        # print(url_text)
 
     file6.write("number of popular articles: " + str(article_num) + '\n')
     for url_text in img_url:
@@ -209,16 +213,17 @@ def keyword(key_word, start_date, end_date):
         date = line[0:line.find(',')]  
         url = line[line.find('http'):]
         href = url.replace('\n','')
-
-        if int(date) >= int(start_date) and int(date) <= int(end_date):
-            # print(title, " ", href, end = ' ')
+        if int(date) > int(end_date):
+            break
+        if int(date) >= int(start_date):
+            
             article_res = requests.get(href, verify = False)
             art_soup = BeautifulSoup(article_res.text,features="lxml")
             art_context = str( art_soup.find_all('div', {'id': 'main-container'}) ).split('--')[0]
 
             if key_word in art_context:
                 
-                # print(title, " ", href)
+                # print(title, " ", date)
 
                 for post in art_soup.select("a"):
                     try:
@@ -226,7 +231,7 @@ def keyword(key_word, start_date, end_date):
                             img_url.append(post['href'])
                     except:
                         pass
-        time.sleep(0.5)
+        time.sleep(0.2)
     for url_text in img_url:
         # print(url_text)
         file8.write(url_text + '\n')    
